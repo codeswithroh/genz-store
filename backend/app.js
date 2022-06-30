@@ -1,9 +1,11 @@
-const app = require("./app");
-const dotenv = require("dotenv");
+const express = require("express");
+const app = express();
 
-// config
-dotenv.config({ path: "backend/config/config.env" });
+app.use(express.json());
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server is listening on port ${process.env.PORT}`);
-});
+// route imports
+const product = require("./routes/productRoutes");
+
+app.use("/api/v1", product);
+
+module.exports = app;
