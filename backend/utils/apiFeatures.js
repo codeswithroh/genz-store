@@ -29,10 +29,19 @@ class ApiFeatures {
     const removeFields = ["keyword", "page", "limit"];
     removeFields.forEach((key) => delete queryCopy[key]);
 
-    this.query = this.query.find(queryCopy);
+    // Filter for rating and price
+    let queryStr = JSON.stringify(queryCopy);
+    queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (key) => `$${key}`);
 
-    console.log(this.query);
+    this.query = this.query.find(JSON.parse(queryStr));
+    return this;
+  }
 
+  pagination(productPerPage) {
+    let currentPage = Number(this.queryStr.page) || 1;
+    let skip = productPerPage * (currentPage - 1); // this tells the no. of products to be skipped based on current page
+
+    this.query = this.query.limit(productPerPage).skip(skip);
     return this;
   }
 }

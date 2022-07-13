@@ -42,11 +42,16 @@ exports.deleteProduct = catchAsyncErrors(async (req, res, next) => {
 
 // get all products
 exports.getAllProducts = catchAsyncErrors(async (req, res) => {
+  const productPerPage = 5;
+  const productCount = await Product.countDocuments(); //keeps count of the total number of products
+
   const apiFeatures = new ApiFeatures(Product.find(), req.query)
     .search()
-    .filter();
+    .filter()
+    .pagination(productPerPage);
+
   const products = await apiFeatures.query;
-  res.status(200).json({ success: true, products });
+  res.status(200).json({ success: true, products, productCount });
 });
 
 // get product by id
